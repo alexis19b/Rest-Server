@@ -7,14 +7,20 @@ const usuarioGet = (req, res = response) => {
 };
 
 const usuarioPost = (req, res = response) => {
+  const body = req.body;
+
   res.json({
     msg: "post API-controler",
+    body,
   });
 };
 
 const usuarioPut = (req, res = response) => {
+  const { id } = req.params;
+
   res.json({
     msg: "put API-controler",
+    id,
   });
 };
 
