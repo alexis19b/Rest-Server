@@ -5,11 +5,14 @@ const Usuario = require("../../models/usuario");
 const usuarioGet = async (req, res = response) => {
   //obtener usuarios con paginacion
   const { limite = 5, desde = 0 } = req.query;
-  const usuarios = await Usuario.find()
-    .skip(Number(desde))
-    .limit(Number(limite));
+
+  const [total, usuarios] = await Promise.all([
+    Usuario.countDocuments({ estado: true }),
+    Usuario.find({ estado: true }).skip(Number(desde)).limit(Number(limite)),
+  ]);
 
   res.json({
+    total,
     usuarios,
   });
 };
@@ -51,9 +54,14 @@ const usuarioPatch = (req, res = response) => {
   });
 };
 
-const usuarioDelete = (req, res = response) => {
+const usuarioDelete = async (req, res = response) => {
+  const { id } = req.params;
+  //Borrar fisicamente (no recomendado)
+  // const usuario = await Usuario.findByIdAndDelete(id);
+  const usuario = await Usuario.findByIdAndUpdate(id, { estado: false });
+
   res.json({
-    msg: "delete API",
+    usuario,
   });
 };
 
