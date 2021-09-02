@@ -1,11 +1,16 @@
 const { response } = require("express");
 const bcryptjs = require("bcryptjs");
 const Usuario = require("../../models/usuario");
-const { emailExiste } = require("../../helpers/db-validators");
 
-const usuarioGet = (req, res = response) => {
+const usuarioGet = async (req, res = response) => {
+  //obtener usuarios con paginacion
+  const { limite = 5, desde = 0 } = req.query;
+  const usuarios = await Usuario.find()
+    .skip(Number(desde))
+    .limit(Number(limite));
+
   res.json({
-    msg: "get API-controler",
+    usuarios,
   });
 };
 
@@ -36,7 +41,6 @@ const usuarioPut = async (req, res = response) => {
   const usuario = await Usuario.findByIdAndUpdate(id, resto);
 
   res.json({
-    msg: "put API-controler",
     usuario,
   });
 };
